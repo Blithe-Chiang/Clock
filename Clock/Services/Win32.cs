@@ -10,6 +10,8 @@ namespace Clock.Services
     public class Win32
     {
         public const int WS_EX_TRANSPARENT = 0x00000020;
+        public const int WS_EX_TOOLWINDOW  = 0x00000080;
+       
         public const int GWL_EXSTYLE = (-20);
 
         [DllImport("user32.dll")]
@@ -30,6 +32,13 @@ namespace Clock.Services
             //Remove the WS_EX_TRANSPARENT flag from the extended window style
             int extendedStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
             Win32.SetWindowLong(hwnd, GWL_EXSTYLE, extendedStyle & ~WS_EX_TRANSPARENT);
+        }
+
+
+        public static void HideAltTab(IntPtr hwnd)
+        {
+            int extendedStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+            Win32.SetWindowLong(hwnd, GWL_EXSTYLE, extendedStyle | WS_EX_TOOLWINDOW);
         }
 
     }

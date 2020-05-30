@@ -11,8 +11,9 @@ namespace Clock.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
-        public MainWindow MainWindow { get; set; }
-
+        CultureInfo culture = new System.Globalization.CultureInfo("zh-CN");
+        private WindowState currentWindowState;
+        private double windowOpacity;
         public MainViewModel()
         {
             WindowOpacity = 0.9;
@@ -29,26 +30,7 @@ namespace Clock.ViewModel
             DisableMouseThrough = new RelayCommand(DisableMouseThroughAction);
         }
 
-        private void DisableMouseThroughAction()
-        {
-            IntPtr hwnd = new WindowInteropHelper(MainWindow).Handle;
-            Win32.MakeNormal(hwnd);
-        }
-
-        private void EnableMouseThroughAction()
-        {
-            IntPtr hwnd = new WindowInteropHelper(MainWindow).Handle;
-            Win32.MakeTransparent(hwnd);
-        }
-
-        public RelayCommand EnableMouseThrough { get; set; }
-
-        public RelayCommand DisableMouseThrough { get; set; }
-
         public RelayCommand Close { get; set; }
-
-        private WindowState currentWindowState;
-
         public WindowState CurrentWindowState
         {
             get { return currentWindowState; }
@@ -59,8 +41,15 @@ namespace Clock.ViewModel
             }
         }
 
+        public DateTimeInfoModel DateTimeInfo { get; set; }
+        public RelayCommand DisableMouseThrough { get; set; }
+        public RelayCommand EnableMouseThrough { get; set; }
+        public Window MainWindow { get; set; }
+        public RelayCommand<string> SetOpacity { get; set; }
 
-        private double windowOpacity;
+        public RelayCommand SetWindowStateToMinimized { get; set; }
+
+        public RelayCommand SetWindowStateToNormal { get; set; }
 
         public double WindowOpacity
         {
@@ -72,30 +61,22 @@ namespace Clock.ViewModel
             }
         }
 
-        public RelayCommand SetWindowStateToNormal { get; set; }
-        public RelayCommand SetWindowStateToMinimized { get; set; }
-
-
-
-        public RelayCommand<string> SetOpacity { get; set; }
-
-        public DateTimeInfoModel DateTimeInfo { get; set; }
-
         private void CloseAction()
         {
             Application.Current.Shutdown();
         }
 
-        private void SetWindowStateToMinimizedAction()
+        private void DisableMouseThroughAction()
         {
-            CurrentWindowState = WindowState.Minimized;
+            IntPtr hwnd = new WindowInteropHelper(MainWindow).Handle;
+            Win32.MakeNormal(hwnd);
         }
 
-        private void SetWindowStateToNormalAction()
+        private void EnableMouseThroughAction()
         {
-            CurrentWindowState = WindowState.Normal;
+            IntPtr hwnd = new WindowInteropHelper(MainWindow).Handle;
+            Win32.MakeTransparent(hwnd);
         }
-
         private void SetOpacityAction(string obj)
         {
             WindowOpacity = double.Parse(obj);
@@ -117,20 +98,29 @@ namespace Clock.ViewModel
             timer.Start();
         }
 
-        CultureInfo culture = new System.Globalization.CultureInfo("zh-CN");
+        private void SetWindowStateToMinimizedAction()
+        {
+            CurrentWindowState = WindowState.Minimized;
+        }
+
+        private void SetWindowStateToNormalAction()
+        {
+            CurrentWindowState = WindowState.Normal;
+        }
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             var now = DateTime.Now;
 
+
+            #region 拼接农历日期
             var str = ChinaDate.GetChinaDate(now);
             var animal = str[1];
             var gv = str.Substring(3, 2);
             var date = str.Split()[1];
 
             var f = $"{gv} {animal}年 {date}";
-
+            #endregion
             //Debug.WriteLine($"INFO {f}");
-
 
             DateTimeInfo.LunarDateText = f;
             DateTimeInfo.TimeText = now.ToString("HH:mm:ss", culture);

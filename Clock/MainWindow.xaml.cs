@@ -1,4 +1,5 @@
-﻿using Clock.ViewModel;
+﻿using Clock.Services;
+using Clock.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -30,6 +32,12 @@ namespace Clock
             MainViewModel mainViewModel = new MainViewModel();
             this.DataContext = mainViewModel;
             mainViewModel.MainWindow = mainWindow;
+        }
+
+        private void mainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            IntPtr hwnd = new WindowInteropHelper(this).Handle;
+            Win32.HideAltTab(hwnd);
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -6,4 +6,4 @@
 
 实际效果
 
-![1590821884058](C:\Users\Blithe\source\wpf\Clock\Readme.assets\1590821884058.png)
+![1590821884058](.\Readme.assets\1590821884058.png)

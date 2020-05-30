@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Clock"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
+        x:Name="mainWindow"
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         Topmost="True"
@@ -38,6 +39,8 @@
                 <ContextMenu
 
                    Background="LightCoral">
+                    <MenuItem Header="鼠标穿透" Command="{Binding EnableMouseThrough}" />
+                    <MenuItem Header="停止鼠标穿透" Command="{Binding DisableMouseThrough}" />
                     <MenuItem Header="显示窗体" Command="{Binding SetWindowStateToNormal}" />
                     <MenuItem Header="隐藏窗体" Command="{Binding SetWindowStateToMinimized}" />
                     <MenuItem Header="设置不透明度(越低越透明)">

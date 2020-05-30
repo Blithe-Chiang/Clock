@@ -5,11 +5,45 @@ using System;
 using System.Globalization;
 using System.Timers;
 using System.Windows;
+using System.Windows.Interop;
 
 namespace Clock.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
+        public MainWindow MainWindow { get; set; }
+
+        public MainViewModel()
+        {
+            WindowOpacity = 0.9;
+            currentWindowState = WindowState.Normal;
+            SetUpTimer();
+
+            SetOpacity = new RelayCommand<string>(SetOpacityAction);
+
+            SetWindowStateToNormal = new RelayCommand(SetWindowStateToNormalAction);
+            SetWindowStateToMinimized = new RelayCommand(SetWindowStateToMinimizedAction);
+            Close = new RelayCommand(CloseAction);
+
+            EnableMouseThrough = new RelayCommand(EnableMouseThroughAction);
+            DisableMouseThrough = new RelayCommand(DisableMouseThroughAction);
+        }
+
+        private void DisableMouseThroughAction()
+        {
+            IntPtr hwnd = new WindowInteropHelper(MainWindow).Handle;
+            Win32.MakeNormal(hwnd);
+        }
+
+        private void EnableMouseThroughAction()
+        {
+            IntPtr hwnd = new WindowInteropHelper(MainWindow).Handle;
+            Win32.MakeTransparent(hwnd);
+        }
+
+        public RelayCommand EnableMouseThrough { get; set; }
+
+        public RelayCommand DisableMouseThrough { get; set; }
 
         public RelayCommand Close { get; set; }
 
@@ -46,19 +80,6 @@ namespace Clock.ViewModel
         public RelayCommand<string> SetOpacity { get; set; }
 
         public DateTimeInfoModel DateTimeInfo { get; set; }
-
-        public MainViewModel()
-        {
-            WindowOpacity = 0.9;
-            currentWindowState = WindowState.Normal;
-            SetUpTimer();
-
-            SetOpacity = new RelayCommand<string>(SetOpacityAction);
-
-            SetWindowStateToNormal = new RelayCommand(SetWindowStateToNormalAction);
-            SetWindowStateToMinimized = new RelayCommand(SetWindowStateToMinimizedAction);
-            Close = new RelayCommand(CloseAction);
-        }
 
         private void CloseAction()
         {
@@ -105,7 +126,7 @@ namespace Clock.ViewModel
             var animal = str[1];
             var gv = str.Substring(3, 2);
             var date = str.Split()[1];
-            
+
             var f = $"{gv} {animal}Äê {date}";
 
             //Debug.WriteLine($"INFO {f}");

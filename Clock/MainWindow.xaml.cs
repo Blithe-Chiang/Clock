@@ -27,10 +27,10 @@ namespace Clock
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new MainViewModel();
-
+            MainViewModel mainViewModel = new MainViewModel();
+            this.DataContext = mainViewModel;
+            mainViewModel.MainWindow = mainWindow;
         }
-
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

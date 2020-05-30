@@ -1,18 +1,86 @@
 using Clock.Services;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Globalization;
 using System.Timers;
+using System.Windows;
 
 namespace Clock.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
 
+        public RelayCommand Close { get; set; }
+
+        private WindowState currentWindowState;
+
+        public WindowState CurrentWindowState
+        {
+            get { return currentWindowState; }
+            set
+            {
+                currentWindowState = value;
+                this.RaisePropertyChanged("CurrentWindowState");
+            }
+        }
+
+
+        private double windowOpacity;
+
+        public double WindowOpacity
+        {
+            get { return windowOpacity; }
+            set
+            {
+                windowOpacity = value;
+                this.RaisePropertyChanged("WindowOpacity");
+            }
+        }
+
+        public RelayCommand SetWindowStateToNormal { get; set; }
+        public RelayCommand SetWindowStateToMinimized { get; set; }
+
+
+
+        public RelayCommand<string> SetOpacity { get; set; }
 
         public DateTimeInfoModel DateTimeInfo { get; set; }
 
         public MainViewModel()
+        {
+            WindowOpacity = 0.9;
+            currentWindowState = WindowState.Normal;
+            SetUpTimer();
+
+            SetOpacity = new RelayCommand<string>(SetOpacityAction);
+
+            SetWindowStateToNormal = new RelayCommand(SetWindowStateToNormalAction);
+            SetWindowStateToMinimized = new RelayCommand(SetWindowStateToMinimizedAction);
+            Close = new RelayCommand(CloseAction);
+        }
+
+        private void CloseAction()
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void SetWindowStateToMinimizedAction()
+        {
+            CurrentWindowState = WindowState.Minimized;
+        }
+
+        private void SetWindowStateToNormalAction()
+        {
+            CurrentWindowState = WindowState.Normal;
+        }
+
+        private void SetOpacityAction(string obj)
+        {
+            WindowOpacity = double.Parse(obj);
+        }
+
+        private void SetUpTimer()
         {
             DateTimeInfo = new DateTimeInfoModel()
             {
@@ -31,9 +99,7 @@ namespace Clock.ViewModel
         CultureInfo culture = new System.Globalization.CultureInfo("zh-CN");
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            //Debug.WriteLine($"Info ... {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}");
             var now = DateTime.Now;
-
 
             var str = ChinaDate.GetChinaDate(now);
             var animal = str[1];

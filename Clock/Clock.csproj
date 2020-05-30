@@ -78,6 +78,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Services\ChinaDate.cs" />
+    <Compile Include="Services\Win32.cs" />
     <Compile Include="ViewModel\DateTimeInfoModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Page Include="MainWindow.xaml">

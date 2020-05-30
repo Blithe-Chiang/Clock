@@ -4,20 +4,51 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Clock"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         mc:Ignorable="d"
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         Topmost="True"
         ResizeMode="NoResize"
+        WindowState="{Binding CurrentWindowState}"
         WindowStyle="None"
-        Opacity="0.5"
+        ShowInTaskbar="False"
+        Opacity="{Binding WindowOpacity}"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Title="MainWindow" Height="135.643" Width="327.671">
+
+
+    <Window.Resources>
+        
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="4*" />
             <RowDefinition Height="7*" />
         </Grid.RowDefinitions>
+
+
+        <!--托盘区域-->
+        <tb:TaskbarIcon
+            IconSource="/Image/Clock2.ico"
+
+            ToolTipText="一个小小的时钟" >
+            <!-- Set a simple context menu  -->
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu
+
+                   Background="LightCoral">
+                    <MenuItem Header="显示窗体" Command="{Binding SetWindowStateToNormal}" />
+                    <MenuItem Header="隐藏窗体" Command="{Binding SetWindowStateToMinimized}" />
+                    <MenuItem Header="设置不透明度(越低越透明)">
+                        <MenuItem Header="0.3" Command="{Binding SetOpacity}" CommandParameter="0.3"  />
+                        <MenuItem Header="0.5" Command="{Binding SetOpacity}" CommandParameter="0.5" />
+                        <MenuItem Header="0.8" Command="{Binding SetOpacity}" CommandParameter="0.8" />
+                    </MenuItem>
+                    <MenuItem Header="关闭" Command="{Binding Close}" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
 
         <TextBlock x:Name="dateTextBlock" Text="{Binding DateTimeInfo.DateText}" FontSize="18" 
                        HorizontalAlignment="Left" VerticalAlignment="Center" Height="20"   />
